@@ -1,11 +1,53 @@
-import { useState } from 'react'
+import {  useState, type FormEvent } from 'react'
 import './App.css'
 import './index.css'
-import { ArrowRight, Plane, MapPin, Calendar, User, UserRoundPlus, Settings2  } from 'lucide-react';
+import { ArrowRight, Plane, MapPin, Calendar, User, UserRoundPlus, Settings2, X, AtSign, Plus  } from 'lucide-react';
 
 function App() {
   const [showInviteEmail,setShowInviteEmail] = useState(false)
   const [showDialog,setShowDialog] = useState(false)
+  const [emailsListInvite, setemailsListInvite] = useState<string[]>([
+    "amarcelaxs@gmail.com"
+  ])
+
+
+  function addNewEmailToInvite(event: FormEvent<HTMLFormElement>){  
+    event.preventDefault();
+
+    const data = new FormData(event.currentTarget)
+    const email = data.get('email')?.toString();
+
+    if(!email){
+      return
+    }
+
+    if(emailsListInvite.includes(email)){
+      alert(`E-mail:$(email) ja foi adicionado !`)
+      return
+    }
+
+    setemailsListInvite(
+      [
+        ...emailsListInvite,
+        email 
+
+      ]
+    )
+
+
+
+    event.currentTarget.reset()
+
+
+    
+
+  }
+
+  function removeEmailToInvite(emailToRemove:string){
+    const newEmailsList = emailsListInvite.filter(email => email !== emailToRemove)
+    setemailsListInvite(newEmailsList)
+   
+  }
 
   return (
     <div>
@@ -101,16 +143,66 @@ function App() {
     {
     showDialog &&
 
-    <div className="fixed inset-0 flex items-center justify-center  bg-black/60" onClick={() => setShowDialog(false)}>
+    <div className="fixed inset-0 flex items-center justify-center  bg-black/60" >
       
       <div className="w-[640px] rounded-x1 py-5 px-6 shadow-shape bg-zinc-900 space-y-5">
-          Selecione os Convidados
+        {/*SELECIONAR E X*/}
+        <div className="space-y-2 ">
+          <div className="flex imtes-center justify-between">
+            <h2 className="font-lf font-semibold">Selecione os Convidados</h2>
+            <button>
+              <X className="size-5 text-sinz-400" onClick={() => setShowDialog(false)}
+                />
+            </button>
+          </div>
+
+          <p className="text-sm text-zin-400">
+             os convidados irão receber emails para confirmar a participação na viagem 
+          </p>
+        </div>    
+
+
+        <div className="flex flex-wrap gap-2">
+
+          {
+            emailsListInvite.map(email =>
+            <div key={email} className="py-1.5 px-2.5 rounded-md bg-zinc-800 flex items-center gap-2">
+            <span className="text-zinc-300">{email}</span>
+              <button type="button">
+                  <X className="size-5 text-sinz-400" onClick={() => {
+                    removeEmailToInvite(email)
+                  } }/>
+              </button>
+            </div>
+            )
+          }
+        
+        </div>
+
+        <div className="w-full h-px bg-s=zinc-500" />
+
+        <form onSubmit={addNewEmailToInvite} className="p-2.5 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center gap-2">
+          <div className="px-2 flex items-center flex-1 gap-2">
+            <AtSign className="text-zinc-400 size-5"/>
+            <input type="email" name="email" placeholder="Digite o email do convidado" 
+            className="bg-transparent text0lg plaveolder-zinc-400 outline-none flex-1"
+            />
+
+          </div>
+          <button className="bg-lime-300 text-lime-950 rounded-lg px-5 py-5 font-medium flex items-center gap-2 hover:bg-lime-400"> 
+            Convidar
+            <Plus />
+          </button>
+        </form>
+
+
+
       </div>
       
     </div>
     }
 
-    </div>
+  </div>
 
   )
 }
