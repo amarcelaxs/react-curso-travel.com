@@ -11,6 +11,9 @@ export default {
         sans: 'Inter',
         },
     },
+    backgroundImage: {
+      quadrados:'url(./src/assets/travel.png)',
   },
   plugins: [],
+},
 }
